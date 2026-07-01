@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Автозапуск otp-bridge.py при входе в систему.
+  ПОПРАВЬТЕ путь к otp-bridge.py в <string> ниже под свою папку,
+  затем скопируйте в ~/Library/LaunchAgents/ и выполните:
+      launchctl load ~/Library/LaunchAgents/com.govisit.otpbridge.plist
+
+  ВАЖНО: чтобы launchd-процесс имел доступ к chat.db, Full Disk Access нужно
+  дать тому python, что указан в ProgramArguments (или /bin/sh, который его
+  запускает). Проще всего: дайте FDA вашему Terminal и запускайте мост из него;
+  launchd используйте, когда базовый сценарий уже работает.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.govisit.otpbridge</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/ВАШ_ЮЗЕР/path/to/govisit-monitor/otp-bridge.py</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/govisit-otpbridge.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/govisit-otpbridge.err</string>
+</dict>
+</plist>
