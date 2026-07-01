@@ -34,7 +34,7 @@
 - Create: `test_otp_extraction.py`
 - Modify: `otp-bridge.py` (регулярки ~строки 62–64; функция после `_extract_text`, ~строка 112)
 
-- [ ] **Step 1: Написать падающие тесты**
+- [x] **Step 1: Написать падающие тесты**
 
 Создать `test_otp_extraction.py` с этим содержимым (целиком):
 
@@ -97,12 +97,12 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-- [ ] **Step 2: Убедиться, что тесты падают**
+- [x] **Step 2: Убедиться, что тесты падают**
 
 Run: `cd /Users/mitya/Documents/Claude/govisit-monitor && python3 -m unittest test_otp_extraction -v`
 Expected: 7 тестов падают с `AttributeError: module 'otp_bridge' has no attribute 'extract_code'`; `test_text_column_preferred` проходит (он не зовёт `extract_code`).
 
-- [ ] **Step 3: Реализовать `extract_code`**
+- [x] **Step 3: Реализовать `extract_code`**
 
 В `otp-bridge.py` заменить блок (сейчас ~строки 62–64):
 
@@ -118,7 +118,8 @@ CODE_REGEX = re.compile(r"\b(\d{4,8})\b")
 # Основная регулярка: якорь «קוד האימות» («код подтверждения»), затем до 20
 # нецифровых символов («לגוביזיט », двоеточие и т.п.), затем сам код (3–8 цифр,
 # бывает с ведущим нулём). Так не путаем код с другими числами в SMS.
-ANCHORED_CODE_REGEX = re.compile(r"קוד האימות[^0-9]{0,20}(\d{3,8})")
+# (?![0-9]) — код не может быть началом более длинного числа (телефона и т.п.).
+ANCHORED_CODE_REGEX = re.compile(r"קוד האימות[^0-9]{0,20}([0-9]{3,8})(?![0-9])")
 
 # Fallback на случай, если govisit переформулирует SMS и якорь исчезнет:
 # отдельно стоящее число 4–8 цифр.
@@ -139,12 +140,12 @@ def extract_code(text: str):
     return m.group(1) if m else None
 ```
 
-- [ ] **Step 4: Убедиться, что тесты проходят**
+- [x] **Step 4: Убедиться, что тесты проходят**
 
 Run: `python3 -m unittest test_otp_extraction -v`
-Expected: `Ran 8 tests ... OK`
+Expected: `Ran 9 tests ... OK`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add test_otp_extraction.py otp-bridge.py
@@ -155,6 +156,13 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
 EOF
 )"
 ```
+
+> **Правка после code-review (выполнено, коммиты `705f74d` + `3dcd76e`):**
+> у якорной регулярки не было границы после кода — телефон после якоря
+> («קוד האימות נשלח אל 0501234567») давал усечённое '05012345'. Регулярка
+> заменена на `([0-9]{3,8})(?![0-9])` (блок Step 3 выше уже обновлён),
+> добавлен девятый тест `test_long_digit_run_not_truncated` и `.gitignore`
+> с `__pycache__/`.
 
 ---
 
@@ -223,7 +231,7 @@ SENDER_CONTAINS = ["govisit"]
 - [ ] **Step 3: Проверить, что всё компилируется и тесты проходят**
 
 Run: `python3 -m py_compile otp-bridge.py && python3 -m unittest test_otp_extraction -v`
-Expected: py_compile молчит; `Ran 8 tests ... OK`
+Expected: py_compile молчит; `Ran 9 tests ... OK`
 
 - [ ] **Step 4: Commit**
 
@@ -308,6 +316,6 @@ EOF
 
 ## Проверка всего плана
 
-- [ ] `python3 -m unittest test_otp_extraction -v` → `Ran 8 tests ... OK`
+- [ ] `python3 -m unittest test_otp_extraction -v` → `Ran 9 tests ... OK`
 - [ ] `python3 -m py_compile otp-bridge.py` → без вывода
-- [ ] `git log --oneline` → 3 новых коммита поверх спеки в ветке `govisit-sms-recognition`
+- [ ] `git log --oneline` → коммиты Task 1–3 (включая фикс после ревью) поверх спеки в ветке `govisit-sms-recognition`
