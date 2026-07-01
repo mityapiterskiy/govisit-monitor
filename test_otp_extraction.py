@@ -31,6 +31,11 @@ class ExtractCodeTests(unittest.TestCase):
         sms = "מספר בקשה 123456. קוד האימות לגוביזיט 0189"
         self.assertEqual(otp_bridge.extract_code(sms), "0189")
 
+    def test_long_digit_run_not_truncated(self):
+        # Телефон после якоря (10 цифр) — не код: не отрезаем первые 8 цифр.
+        # Fallback тоже отвергает: у 4–8-значного окна внутри длинного числа нет \b.
+        self.assertIsNone(otp_bridge.extract_code("קוד האימות נשלח אל 0501234567"))
+
     def test_fallback_without_anchor(self):
         # Якоря нет (govisit переформулировал SMS) — работает общий fallback.
         self.assertEqual(otp_bridge.extract_code("Your code is 654321"), "654321")
