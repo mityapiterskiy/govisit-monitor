@@ -171,7 +171,7 @@ EOF
 **Files:**
 - Modify: `otp-bridge.py` (`CODE_TTL` ~строка 60, `SENDER_CONTAINS` ~строка 69, `_poll_once` ~строки 180–184)
 
-- [ ] **Step 1: Использовать `extract_code` в `_poll_once`**
+- [x] **Step 1: Использовать `extract_code` в `_poll_once`**
 
 В `otp-bridge.py` внутри `_poll_once` заменить:
 
@@ -191,7 +191,7 @@ EOF
             continue
 ```
 
-- [ ] **Step 2: Обновить дефолты конфига**
+- [x] **Step 2: Обновить дефолты конфига**
 
 Заменить (сейчас ~строки 58–60):
 
@@ -228,12 +228,12 @@ SENDER_CONTAINS = []  # напр. ["govisit", "MOIN", "972"]
 SENDER_CONTAINS = ["govisit"]
 ```
 
-- [ ] **Step 3: Проверить, что всё компилируется и тесты проходят**
+- [x] **Step 3: Проверить, что всё компилируется и тесты проходят**
 
 Run: `python3 -m py_compile otp-bridge.py && python3 -m unittest test_otp_extraction -v`
 Expected: py_compile молчит; `Ran 9 tests ... OK`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add otp-bridge.py
@@ -252,7 +252,7 @@ EOF
 **Files:**
 - Modify: `README.md` (Шаг 3 ~строки 48–67; «Если код не извлекается» ~строки 129–138)
 
-- [ ] **Step 1: Дописать в «Шаг 3. Запуск моста»**
+- [x] **Step 1: Дописать в «Шаг 3. Запуск моста»**
 
 После строки `Если \`code:null\` — смотрите раздел «Если код не извлекается».` (~строка 67) добавить абзац:
 
@@ -266,7 +266,7 @@ python3 -m unittest test_otp_extraction -v
 ```
 ````
 
-- [ ] **Step 2: Переписать раздел «Если код не извлекается»**
+- [x] **Step 2: Переписать раздел «Если код не извлекается»**
 
 Заменить (сейчас ~строки 131–138):
 
@@ -301,7 +301,7 @@ python3 -m unittest test_otp_extraction -v
   кода) или добавьте `TEXT_CONTAINS` с ключевым словом из сообщения.
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add README.md
@@ -313,10 +313,17 @@ EOF
 )"
 ```
 
+> **Правка после code-review (выполнено, коммит `e413761`):** второй раунд
+> ревью README пошёл только в сам README (блоки Step 1–2 выше его не включают):
+> оговорка к smoke-тесту Шага 3 (дефолтный фильтр отсекает SMS от самого себя),
+> «запросите новый код» в рецепте обнаружения отправителя, fallback назван
+> `CODE_REGEX`, переписан пункт «Взялось не то число», уточнены «Ограничения»
+> (что покрыто тестами, что нет). Финальный текст — в README.md.
+
 ---
 
 ## Проверка всего плана
 
-- [ ] `python3 -m unittest test_otp_extraction -v` → `Ran 9 tests ... OK`
-- [ ] `python3 -m py_compile otp-bridge.py` → без вывода
-- [ ] `git log --oneline` → коммиты Task 1–3 (включая фикс после ревью) поверх спеки в ветке `govisit-sms-recognition`
+- [x] `python3 -m unittest test_otp_extraction -v` → `Ran 9 tests ... OK`
+- [x] `python3 -m py_compile otp-bridge.py` → без вывода
+- [x] `git log --oneline` → коммиты Task 1–3 (включая фикс после ревью) поверх спеки в ветке `govisit-sms-recognition`
